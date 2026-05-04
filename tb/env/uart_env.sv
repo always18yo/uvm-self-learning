@@ -30,6 +30,7 @@ class uart_env #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_item) ext
    function void build_phase(uvm_phase phase);
       super.build_phase(phase);
       // P1 Todo: instantiate the master agent
+      uart_agent_0 = uart_agent_t::type_id::create("uart_agent_0", this);
       // P2 Todo: instantiate the slave agent
       // P2 Todo: instantiate the scoreboard
    endfunction

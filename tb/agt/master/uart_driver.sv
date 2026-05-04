@@ -46,6 +46,9 @@ class uart_driver #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_item) 
     //
     // P1 Todo: retrieve the handle to uart_if using vif. Look in top.sv for references
     //
+    if( !uvm_config_db #(virtual uart_if)::get(this,"","UART_VIF",vif) ) begin
+      `uvm_error(my_name, "Could not retrieve virtual uart_if")
+    end
     // X Todo: use uvm_config_db get to retrieve the uart_cfg in cfg
   endfunction
  
@@ -65,6 +68,7 @@ class uart_driver #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_item) 
       // get_next_item method is part of the interface api between uvm_driver and uvm_sequencer
       //
       // P1 Todo: get the next packet req_pkt by calling get_next_item
+      seq_item_port.get_next_item(req_pkt);
       if (req_pkt.do_reset == 1) begin
         // Packet is reset
       	clk_rst_vif.do_reset(5);
@@ -79,8 +83,13 @@ class uart_driver #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_item) 
         // Form the data to send
         // Stop bit: rx_data: Start bit, LSB first
         // P1 Todo: construct out_data = {stop_bit, rx_data, start_bit}
+        out_data = {1'b1, req_pkt.rx_data, 1'b0};
         // X Todo: if inject_err==1, invert the value in rx_data: rx_data^8'hff
         // P1 Todo: use a for loop to send out_data serially, lsb first
+        for (int i = 0; i < 10; i++) begin
+          vif.rx <= out_data[i];
+          @(posedge vif.clk);
+        end
 		  end
       
       // Send response packet back to the sequence

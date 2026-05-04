@@ -32,7 +32,9 @@ class uart_demo_test extends uvm_test;
 	function void build_phase(uvm_phase phase);
 		super.build_phase(phase);
     // P1 Todo: instantiate the environment class
+    env_h = env_t::type_id::create("env_h", this);
     // P1 Todo: instantiate the demo sequence
+    uart_demo_seq = uart_demo_seq_t::type_id::create("uart_demo_seq");
     // X Todo: instantiate cfg
     // X Todo: use uvm_config_db set to place the cfg handle in the resource database
 	endfunction
