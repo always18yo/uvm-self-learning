@@ -30,6 +30,15 @@ class uart_demo_seq #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_item
     //          - for P3, trigger event req_pkt.sample_e
     //          - send the req_pkt
     //          - get the response
+	
+	for (int i = 0; i < 10; i++) begin
+       req_pkt = REQ::type_id::create($sformatf("req_pkt_%0d", i));
+       start_item(req_pkt);
+       if (!req_pkt.randomize()) begin
+         `uvm_error(my_name, "Randomization failed")
+       end
+       finish_item(req_pkt);
+       get_response(rsp_pkt);
+    end
   endtask
-   
 endclass
