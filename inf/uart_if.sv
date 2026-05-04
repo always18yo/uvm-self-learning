@@ -12,13 +12,23 @@ interface uart_if (input logic clk, input logic rst);
 
   // Generate uart_clk to be used to send rx_data
 	initial begin
-    // Todo: initialize rx_data to 0
-		// Todo: initialize uart_clk to 1
-		forever begin
+      // Todo: initialize rx_data to 0
+	  rx_data = 0;
+
+	  // Todo: initialize uart_clk to 1
+	  uart_clk = 1;
+
+	  forever begin
       // The BAUD rate is 115200
       // The clk 10Mhz
       // clk periods per bit is 88
       // Todo: generate the uart_clk
+
+      uart_clk = 1;
+      repeat (44) @(posedge clk);
+
+      uart_clk = 0;
+      repeat (44) @(posedge clk);
 		end
 	end
 
