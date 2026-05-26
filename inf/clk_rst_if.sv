@@ -23,14 +23,14 @@ interface clk_rst_if (output logic clk, output logic rst);
 	endtask
 	
   //
-  // Generate 10MHz clk
+  // Generate clk
   //
 	initial begin
 		#1;
 		clk = 1;
 		rst = 0;
 		forever begin
-			#5 clk = ~clk;
+			#30 clk = ~clk;
 		end
 	end
 
