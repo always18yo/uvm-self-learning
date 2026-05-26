@@ -3,14 +3,13 @@
 // vanleatwork@yahoo.com
 // Phone: VN: 0396221156, US: 5125841843
 //***************************************************************************************************************
-package uart_env_pkg;
-
+package apb_agent_pkg;
+   
    import uvm_pkg::*;
-   import uart_agent_pkg::*;
-   // P2 Todo: import uart_slave_agent_pkg::*;
-   // P2 Todo: import uart_chk_pkg::*;
+   import spi_cfg_pkg::*;
    
    `include "uvm_macros.svh"
-   `include "uart_env.sv"
-   
+   `include "apb_driver.sv"
+   `include "apb_agent.sv"
+
 endpackage

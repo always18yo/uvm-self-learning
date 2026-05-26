@@ -4,34 +4,21 @@
 // Phone: VN: 0396221156, US: 5125841843
 //***************************************************************************************************************
 //***************************************************************************************************************
-// An error injection test case.
+// The test package provides a test layer between the top module and the environment. More than
+// one test can be included here.
 //***************************************************************************************************************
-class uart_err_test extends uart_demo_test;
+package spi_test_pkg;
 
-	`uvm_component_utils(uart_err_test)
-	
-	string	my_name;
-	
-  //
-  // NEW
-  //
-	function new(string name, uvm_component parent);
-		super.new(name,parent);
-		my_name = name;
-	endfunction
-	
-  //
-  // BUILD phase
-  //
-	function void build_phase(uvm_phase phase);
-		super.build_phase(phase);
-	endfunction
-  
-  //
-  // CONNECT phase
-  //
-	function void connect_phase(uvm_phase phase);
-		// X Todo: assign inject_err to 1
-	endfunction
-  
-endclass
+   import uvm_pkg::*;
+   import spi_env_pkg::*;
+   import spi_cfg_pkg::*;
+   import spi_tlm_pkg::*;
+   import apb_seq_pkg::*;
+   
+   `include "uvm_macros.svh"  
+   //
+   // All new tests must derive from base_test and must be listed here.
+   // Each test is saved as one file
+   //
+   `include "spi_demo_test.sv"       // single sequence test
+endpackage

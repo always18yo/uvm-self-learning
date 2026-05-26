@@ -7,14 +7,11 @@
 // Top level module. It is responsible for instantiating the dut and the interface modules. It also passes the
 // interface handle using set_config_object.
 //***************************************************************************************************************
- `timescale 1ns/1ps
-
 import uvm_pkg::*;
-import uart_test_pkg::*;
 
-`include "uvm_macros.svh"
-
+ `timescale 1ns/1ps
 module top;
+import spi_test_pkg::*;
    
   wire clk;
   wire rst;
@@ -23,25 +20,38 @@ module top;
   // Create interface instances here
   //
   clk_rst_if clk_rst_if0(.clk(clk),.rst(rst));
-  // P1 Todo: instantiate the uart_if 
-  uart_if uart_if0(.clk(clk));
+  apb_if apb_if0(.clk(clk),.rst(rst));
+  spi_if spi_if0(.clk(clk),.rst(rst));
+   
   //
   // Create DUT instance
   //
-  // P1 Todo: instantiate the DUT and connect the signals
-  uart_rx dut (
-    .clk(clk),
-    .rst(rst),
-    .rx(uart_if0.rx),
-    .rx_data(uart_if0.rx_data),
-    .rx_done(uart_if0.rx_done)
-  );
+  spi_top dut0(
+    // APB Interface:
+    .PCLK(clk),
+    .PRESETN(rst),
+    .PSEL(apb_if0.PSEL),
+    .PADDR(apb_if0.PADDR[4:0]),
+    .PWDATA(apb_if0.PWDATA),
+    .PRDATA(apb_if0.PRDATA),
+    .PENABLE(apb_if0.PENABLE),
+    .PREADY(apb_if0.PREADY),
+    .PSLVERR(),
+    .PWRITE(apb_if0.PWRITE),
+    // Interrupt output
+    .IRQ(apb_if0.IRQ),
+    // SPI signals
+    .ss_pad_o(spi_if0.ss_pad_o),
+    .sclk_pad_o(spi_if0.sclk_pad_o),
+    .mosi_pad_o(spi_if0.mosi_pad_o),
+    .miso_pad_i(spi_if0.miso_pad_i)
+	);
 
   initial begin
     // Put interface handles in resource database
     uvm_config_db #(virtual clk_rst_if)::set(null,"*","CLK_RST_VIF",clk_rst_if0);
-    // P1 Todo: place the uart_if in the resource database
-    uvm_config_db #(virtual uart_if)::set(null,"*","UART_VIF",uart_if0);
+    uvm_config_db #(virtual apb_if)::set(null,"*","APB_VIF",apb_if0);
+    uvm_config_db #(virtual spi_if)::set(null,"*","SPI_VIF",spi_if0);
     // Run test
     run_test();
   end

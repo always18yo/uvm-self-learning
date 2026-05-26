@@ -3,19 +3,23 @@
 // vanleatwork@yahoo.com
 // Phone: VN: 0396221156, US: 5125841843
 //***************************************************************************************************************
-class uart_cfg extends uvm_object;
+class spi_slave_monitor #(type PKT = uvm_sequence_item) extends uvm_monitor;
 
-  `uvm_object_utils(uart_cfg)
-
-  // X Todo: declare a bit variable inject_err
+  `uvm_component_param_utils(spi_slave_monitor #(PKT))
   
   //
   // NEW
   //
-  function new(string name = "");
-    super.new(name);
-    // X Todo: assign 0 to inject_err
+  function new(string name, uvm_component parent);
+    super.new(name,parent);
   endfunction
-
   
+  //
+  // CONNECT phase
+  //
+  
+  //
+  // RUN phase
+  //
+   
 endclass
