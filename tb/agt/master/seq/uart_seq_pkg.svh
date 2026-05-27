@@ -6,7 +6,7 @@
 package uart_seq_pkg;
 
    import uvm_pkg::*;
-  
+   import uart_tlm_pkg::*;  
    `include "uvm_macros.svh"
    `include "uart_demo_seq.sv"
    

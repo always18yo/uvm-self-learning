@@ -24,7 +24,22 @@ class uart_tlm extends uvm_sequence_item;
   //       pat_01: rx_data is 8'h55
   //       pat_10: rx_data is 8'haa
   //       others[] : default
-  
+   
+  covergroup cfg_cov_grp @(sample_e);
+     option.per_instance = 1;
+
+  cp_rx_data: coverpoint rx_data {
+     bins pat_0    = {8'h00};
+     bins pat_1    = {8'hff};
+     bins pat_01   = {8'h55};
+     bins pat_10   = {8'haa};
+     bins other[]  = default;
+
+  }
+  endgroup
+
+
+
   //
   // NEW
   //
@@ -32,6 +47,7 @@ class uart_tlm extends uvm_sequence_item;
     super.new(name);
     my_name = name;
     // P3 Todo: instantiate cfg_cov_grp
+    cfg_cov_grp = new();
   endfunction
   
   //
@@ -46,6 +62,13 @@ class uart_tlm extends uvm_sequence_item;
     //       8'h55
     //       8'haa
     //       others
- 	}
+    rx_data dist{
+       8'h00 := 1,
+       8'hff := 1,
+       8'h55 := 1,
+       8'haa := 1,
+       [8'h01:8'hfe] := 1       
+    };	    
+  }
   
 endclass

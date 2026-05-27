@@ -32,15 +32,20 @@ class uart_env #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_item) ext
       // P1 Todo: instantiate the master agent
       uart_agent_0 = uart_agent_t::type_id::create("uart_agent_0", this);
       // P2 Todo: instantiate the slave agent
+      uart_slave_agent_0 = uart_slave_agent_t::type_id::create("uart_slave_agent_0", this);
       // P2 Todo: instantiate the scoreboard
+      sb_0 = sb_t::type_id::create("sb_0", this);
    endfunction
    
    //
    // CONNECT phase
    //
    function void connect_phase(uvm_phase phase);
+    super.connect_phase(phase);
     // P2 Todo: connect the master agent ref_uart_ap port to the scoreboard ref_ap_fifo
+    uart_agent_0.ref_uart_ap.connect(sb_0.ref_ap_fifo.analysis_export);
     // P2 Todo: connect the slave agent act_uart_ap port to the scoreboard act_ap_fifo
+    uart_slave_agent_0.act_uart_ap.connect(sb_0.act_ap_fifo.analysis_export);
    endfunction
    
 endclass

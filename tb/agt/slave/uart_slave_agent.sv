@@ -22,6 +22,7 @@ class uart_slave_agent #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_i
     super.new(name,parent);
     my_name = name;
     // P2 Todo: instantiate act_uart_ap for hierarchical connection
+    act_uart_ap = new("act_uart_ap", this);
   endfunction
   
   //
@@ -30,13 +31,16 @@ class uart_slave_agent #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_i
   function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     // P2 Todo: instantiate the monitor
+    monitor = uart_slave_monitor_t::type_id::create("monitor", this);
   endfunction
   
   //
   // CONNECT phase
   //
-  function void connect;
+  function void connect_phase(uvm_phase phase);
     // P2 Todo: connect the monitor act_uart_ap to the agent act_uart_ap
+    super.connect_phase(phase);
+    monitor.act_uart_ap.connect(act_uart_ap);
   endfunction
   
 endclass

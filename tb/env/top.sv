@@ -24,17 +24,24 @@ module top;
   //
   clk_rst_if clk_rst_if0(.clk(clk),.rst(rst));
   // P1 Todo: instantiate the uart_if 
-  uart_if uart_if0(.clk(clk));
+  uart_if uart_if0(.clk(clk), .rst(rst));
   //
   // Create DUT instance
   //
   // P1 Todo: instantiate the DUT and connect the signals
-  uart_rx dut (
-    .clk(clk),
-    .rst(rst),
-    .rx(uart_if0.rx),
-    .rx_data(uart_if0.rx_data),
-    .rx_done(uart_if0.rx_done)
+  //uart_rx dut (
+  //  .clk(clk),
+  //  .rst(rst),
+  //  .rx(uart_if0.rx),
+  //  .rx_data(uart_if0.rx_data),
+  //  .rx_done(uart_if0.rx_done)
+  //);
+
+  receiver dut (
+    .i_Clock(clk),
+    .i_Rx_Serial(uart_if0.rx_data),
+    .o_Rx_DV(uart_if0.o_valid),
+    .o_Rx_Byte(uart_if0.o_data)
   );
 
   initial begin

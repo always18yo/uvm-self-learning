@@ -8,7 +8,9 @@ package uart_env_pkg;
    import uvm_pkg::*;
    import uart_agent_pkg::*;
    // P2 Todo: import uart_slave_agent_pkg::*;
+   import uart_slave_agent_pkg::*;
    // P2 Todo: import uart_chk_pkg::*;
+   import uart_chk_pkg::*;
    
    `include "uvm_macros.svh"
    `include "uart_env.sv"

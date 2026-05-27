@@ -34,6 +34,7 @@ class uart_agent #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_item) e
     // P1 Todo: instantiate the driver
     driver = uart_driver_t::type_id::create("driver", this);
     // P2 Todo: instantiate ref_uart_ap for hierarchicall connection
+    ref_uart_ap = new("ref_uart_ap", this);
   endfunction
    
   //
@@ -42,9 +43,10 @@ class uart_agent #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_item) e
   //
   function void connect_phase(uvm_phase phase);
     super.connect_phase(phase);
-    // P1 Todo: connect the driver seq_item_port to the sequencer seq_item_port
+    // P1 Todo: connect the driver seq_item_port to the sequencer seq_item_export
     driver.seq_item_port.connect(sequencer.seq_item_export);
     // P2 Todo: connect the driver ref_uart_ap to the agent ref_uart_ap
+    driver.ref_uart_ap.connect(ref_uart_ap);
   endfunction
    
 endclass

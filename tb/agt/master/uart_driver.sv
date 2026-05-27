@@ -15,7 +15,7 @@ class uart_driver #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_item) 
   uvm_analysis_port #(REQ) ref_uart_ap;
 
   // X Todo: declare a uart_cfg handle named cfg
- 
+  uart_cfg cfg; 
   //
   // NEW
   //
@@ -29,6 +29,7 @@ class uart_driver #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_item) 
   virtual function void build_phase(uvm_phase phase);
     super.build_phase(phase);
     // P2 Todo: instantiate ref_uart_ap 
+    ref_uart_ap = new("ref_uart_ap", this);
   endfunction
 
   //
@@ -46,10 +47,13 @@ class uart_driver #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_item) 
     //
     // P1 Todo: retrieve the handle to uart_if using vif. Look in top.sv for references
     //
-    if( !uvm_config_db #(virtual uart_if)::get(this,"","UART_VIF",vif) ) begin
+    if(!uvm_config_db #(virtual uart_if)::get(this,"","UART_VIF",vif) ) begin
       `uvm_error(my_name, "Could not retrieve virtual uart_if")
     end
     // X Todo: use uvm_config_db get to retrieve the uart_cfg in cfg
+    if (!uvm_config_db #(uart_cfg)::get(this, "", "cfg", cfg)) begin
+      `uvm_error(my_name, "Could not retrieve uart_cfg")
+    end
   endfunction
  
   //
@@ -78,19 +82,28 @@ class uart_driver #(type REQ = uvm_sequence_item, type RSP = uvm_sequence_item) 
 				clk_rst_vif.do_wait(5);
 			end else begin
         `uvm_info(my_name,$psprintf("Sending rx_data=%0x",req_pkt.rx_data),UVM_NONE)
-        ref_uart_ap.write(req_pkt); // Send reference data to the scoreboard
+        // Send reference data to the scoreboard
         // P2 Todo: send req_pkt to the scoreboard by calling write function
+	ref_uart_ap.write(req_pkt);
+
+	vif.rx_data <= 1'b1;
+	@(posedge vif.uart_clk);
         // Form the data to send
-        // Stop bit: rx_data: Start bit, LSB first
-        // P1 Todo: construct out_data = {stop_bit, rx_data, start_bit}
+        // Stop bit: rx_data_data: Start bit, LSB first
+        // P1 Todo: construct out_data = {stop_bit, rx_data_data, start_bit}
         out_data = {1'b1, req_pkt.rx_data, 1'b0};
-        // X Todo: if inject_err==1, invert the value in rx_data: rx_data^8'hff
+        // X Todo: if inject_err==1, invert the value in rx_data_data: rx_data_data^8'hff
+	if (cfg.inject_err == 1) begin
+           out_data[8:1] = req_pkt.rx_data^8'hff;
+	end 
         // P1 Todo: use a for loop to send out_data serially, lsb first
         for (int i = 0; i < 10; i++) begin
-          vif.rx <= out_data[i];
-          @(posedge vif.clk);
+          vif.rx_data <= out_data[i];
+          @(posedge vif.uart_clk);
         end
-		  end
+	vif.rx_data <= 1'b1;
+	@(posedge vif.uart_clk);
+  end
       
       // Send response packet back to the sequence
       rsp_pkt_cnt++;

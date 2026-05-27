@@ -17,14 +17,14 @@ class uart_demo_test extends uvm_test;
   typedef uart_env #(uart_tlm,uart_tlm) env_t;
   env_t env_h;
   // X Todo: declare a uart_cfg variable named cfg
-  
+  uart_cfg cfg;
   //
   // NEW
   //
-	function new(string name, uvm_component parent);
-		super.new(name,parent);
-		my_name = name;
-	endfunction
+  function new(string name, uvm_component parent);
+     super.new(name,parent);
+     my_name = name;
+  endfunction
 	
   //
   // BUILD phase
@@ -36,7 +36,9 @@ class uart_demo_test extends uvm_test;
     // P1 Todo: instantiate the demo sequence
     uart_demo_seq = uart_demo_seq_t::type_id::create("uart_demo_seq");
     // X Todo: instantiate cfg
+    cfg = uart_cfg::type_id::create("cfg"); 
     // X Todo: use uvm_config_db set to place the cfg handle in the resource database
+    uvm_config_db #(uart_cfg)::set(this, "*", "cfg", cfg);
 	endfunction
   
   //
