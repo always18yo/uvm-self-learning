@@ -10,8 +10,8 @@ class uart_slave_monitor #(type PKT = uvm_sequence_item) extends uvm_monitor;
   string   my_name;
   
   virtual interface uart_if       vif;
-  virtual interface clk_rst_if clk_rst_vif;
-  uvm_analysis_port #(PKT) act_uart_ap;
+  virtual interface clk_rst_if    clk_rst_vif;
+  uvm_analysis_port #(PKT)        act_uart_ap;
  
   //
   // NEW
